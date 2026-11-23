@@ -4,7 +4,7 @@ import Auth from "./components/Auth.jsx";
 import Subscribe from "./components/Subscribe.jsx";
 import { login, setLive, getLive } from "./lib/sheet.js";
 import { isLiveNow, SCHEDULE_TEXT } from "./lib/schedule.js";
-
+import GuestPage from './components/GuestPage.jsx';
 const ROOM_ID = "stream-main";
 const ADMIN_EMAIL = (import.meta.env.VITE_ADMIN_EMAIL || "").toLowerCase();
 
@@ -14,6 +14,7 @@ export default function App() {
   const [watching, setWatching] = useState(false);
   const [streamLive, setStreamLive] = useState(false);
   const [, setTick] = useState(0);
+  const [guest, setGuest] = useState(false);
 
   // Schedule display har 30 second mein refresh karein
   useEffect(() => {
@@ -75,7 +76,11 @@ export default function App() {
     );
   }
 
-  if (!user) return <Auth onAuth={setUser} />;
+  // if (!user) return <Auth onAuth={setUser} />;
+  if (!user) {
+  if (guest) return <GuestPage onBack={() => setGuest(false)} />;
+  return <Auth onAuth={setUser} onGuest={() => setGuest(true)} />;
+}
 
   const isAdmin = user.email === ADMIN_EMAIL;
   const isActive =
